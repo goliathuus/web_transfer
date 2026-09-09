@@ -6,9 +6,24 @@ export interface Event {
   ends_at: string | null;
 }
 
+/**
+ * Delai accorde apres la fin d'un evenement pour deposer sa trace.
+ *
+ * Doit rester aligne sur la fonction SQL event_submission_grace() : sans ca,
+ * l'interface refuserait un code que le serveur accepte encore, ou l'inverse.
+ */
+export const SUBMISSION_GRACE_MS = 24 * 60 * 60 * 1000;
+
 export function isEventExpired(event: Event): boolean {
   if (!event.ends_at) return false;
-  return new Date() > new Date(event.ends_at);
+  return Date.now() > new Date(event.ends_at).getTime() + SUBMISSION_GRACE_MS;
+}
+
+/** Vrai quand l'evenement est termine mais encore dans le delai de depot. */
+export function isEventInGracePeriod(event: Event): boolean {
+  if (!event.ends_at) return false;
+  const end = new Date(event.ends_at).getTime();
+  return Date.now() > end && !isEventExpired(event);
 }
 
 export interface StravaActivity {
