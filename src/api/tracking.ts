@@ -2,11 +2,21 @@ import { config } from '../config';
 import { ensureAnonymousAuth, getSupabase } from '../supabase';
 import type { TrackerRegistration } from '../types';
 
-const INGEST_URL = `${config.supabaseUrl}/functions/v1/owntracks-ingest`;
+// OwnTracks poste directement sur la RPC PostgREST : l'API REST n'est pas
+// facturee a la requete, contrairement aux Edge Functions (un point par
+// seconde et par bateau epuiserait le quota). OwnTracks ne sait pas ajouter
+// d'en-tete : la cle anon (publique) passe dans l'URL.
+const INGEST_URL =
+  `${config.supabaseUrl}/rest/v1/rpc/owntracks_ingest?apikey=${config.supabaseAnonKey}`;
 
-// Intervalle d'envoi en mode "move" (secondes). A ajuster apres l'essai en
-// mer : plus court = trace plus fine, mais batterie et data plus sollicitees.
+// Intervalle d'envoi en mode "move" (secondes). Android le respecte ; iOS
+// envoie a chaque mise a jour GPS (~1 s) et ne filtre qu'a la distance.
 const MOVE_INTERVAL_S = 5;
+
+// Distance minimale entre deux points (m). N'ecrete pas une navigation
+// normale (~3 m/s a 6 noeuds) mais evite d'envoyer un point par seconde
+// quand le bateau est a quai ou tres lent.
+const MIN_DISPLACEMENT_M = 3;
 
 export const OWNTRACKS_STORE_LINKS = {
   ios: 'https://apps.apple.com/app/owntracks/id692424691',
@@ -65,7 +75,7 @@ export function ownTracksConfig(reg: TrackerRegistration): Record<string, unknow
     monitoring: 2, // move : suivi continu
     locatorInterval: MOVE_INTERVAL_S,
     moveModeLocatorInterval: MOVE_INTERVAL_S,
-    locatorDisplacement: 0,
+    locatorDisplacement: MIN_DISPLACEMENT_M,
     pubExtendedData: true,
     cmd: false,
     remoteConfiguration: false,
