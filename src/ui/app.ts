@@ -1,11 +1,12 @@
 import { completeStravaOAuth } from '../api/strava';
-import { loadFlowState, saveFlowState } from '../flow-state';
+import { loadFlowState, loadTrackingRegistration, saveFlowState } from '../flow-state';
 import type { SubmissionSummary } from '../types';
 import type { StepId } from './shell';
 import { renderStepActivities } from './steps/step-activities';
 import { renderStepCode } from './steps/step-code';
 import { renderStepParticipant } from './steps/step-participant';
 import { renderStepSuccess } from './steps/step-success';
+import { renderStepTracking } from './steps/step-tracking';
 
 export class App {
   private root: HTMLElement;
@@ -19,7 +20,9 @@ export class App {
     if (oauthCode) return;
 
     const flow = loadFlowState();
-    if (flow.stravaConnected && flow.event && flow.boatName) {
+    if (flow.event && flow.boatName && loadTrackingRegistration(flow.event.id)) {
+      this.goTo('tracking');
+    } else if (flow.stravaConnected && flow.event && flow.boatName) {
       this.goTo('activities');
     } else if (flow.event) {
       this.goTo('participant');
@@ -81,7 +84,11 @@ export class App {
           this.root,
           () => this.goTo('code'),
           () => this.goTo('activities'),
+          () => this.goTo('tracking'),
         );
+        break;
+      case 'tracking':
+        void renderStepTracking(this.root, () => this.goTo('participant'));
         break;
       case 'activities':
         void renderStepActivities(

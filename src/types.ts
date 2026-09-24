@@ -70,6 +70,19 @@ export interface SubmissionSummary {
   validationStatus: ValidationStatus;
 }
 
+/**
+ * Inscription d'un telephone au suivi en direct. Le jeton n'est renvoye
+ * qu'une fois par le serveur : on le garde pour la duree de l'onglet afin
+ * qu'un rechargement n'en genere pas un nouveau (ce qui deconnecterait un
+ * telephone deja configure).
+ */
+export interface TrackerRegistration {
+  eventId: string;
+  boatName: string;
+  deviceId: string;
+  token: string;
+}
+
 export interface FlowState {
   event: Event | null;
   boatName: string | null;

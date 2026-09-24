@@ -1,4 +1,4 @@
-import type { Event, FlowState } from './types';
+import type { Event, FlowState, TrackerRegistration } from './types';
 import { isEventExpired } from './types';
 
 const KEYS = {
@@ -7,7 +7,20 @@ const KEYS = {
   athleteId: 'flow_strava_athlete_id',
   stravaConnected: 'flow_strava_connected',
   pendingOAuth: 'flow_pending_oauth',
+  tracking: 'flow_tracking_registration',
 } as const;
+
+export function saveTrackingRegistration(reg: TrackerRegistration): void {
+  sessionStorage.setItem(KEYS.tracking, JSON.stringify(reg));
+}
+
+/** Inscription deja faite dans cet onglet pour cet evenement, s'il y en a une. */
+export function loadTrackingRegistration(eventId: string): TrackerRegistration | null {
+  const raw = sessionStorage.getItem(KEYS.tracking);
+  if (!raw) return null;
+  const reg = JSON.parse(raw) as TrackerRegistration;
+  return reg.eventId === eventId ? reg : null;
+}
 
 export function saveFlowState(state: FlowState): void {
   if (state.event) {

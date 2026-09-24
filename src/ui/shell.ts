@@ -1,4 +1,4 @@
-export type StepId = 'code' | 'participant' | 'activities' | 'success';
+export type StepId = 'code' | 'participant' | 'activities' | 'success' | 'tracking';
 
 export interface ShellOptions {
   title: string;

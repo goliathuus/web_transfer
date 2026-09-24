@@ -11,8 +11,10 @@ export function mapError(error: unknown): string {
   if (msg.includes('token_revoked')) return 'Session Strava expirée. Reconnectez-vous.';
   if (msg.includes('no_gps_data')) return 'Cette activité ne contient pas de données GPS.';
   if (msg.includes('duplicate_boat')) {
-    return 'Une soumission existe déjà pour ce bateau sur cet événement.';
+    return 'Ce nom de bateau est déjà utilisé sur cet événement.';
   }
+  if (msg.includes('missing_boat_name')) return 'Le nom du bateau est obligatoire.';
+  if (msg.includes('invalid_event')) return 'Événement introuvable.';
   if (msg.includes('duplicate_activity')) {
     return 'Cette activité Strava a déjà été soumise pour cet événement.';
   }

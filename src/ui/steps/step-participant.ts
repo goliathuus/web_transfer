@@ -6,6 +6,7 @@ export function renderStepParticipant(
   root: HTMLElement,
   onBack: () => void,
   onStravaConnected: () => void,
+  onTracking: () => void,
 ): void {
   const flow = loadFlowState();
   const event = flow.event!;
@@ -37,6 +38,9 @@ export function renderStepParticipant(
         `
         }
       </form>
+      <div class="divider"><span>ou</span></div>
+      <p class="hint">Enregistrez la trace pendant la navigation, visible en direct à terre.</p>
+      <button type="button" class="btn btn-outline" id="btn-tracking">Suivre en direct avec OwnTracks</button>
     `,
   );
 
@@ -63,7 +67,7 @@ export function renderStepParticipant(
         stravaConnected: false,
         stravaAthleteId: null,
       });
-      renderStepParticipant(root, onBack, onStravaConnected);
+      renderStepParticipant(root, onBack, onStravaConnected, onTracking);
     } catch {
       showError(root, 'Impossible de déconnecter Strava.');
     }
@@ -77,5 +81,16 @@ export function renderStepParticipant(
     }
     saveFlowState({ ...loadFlowState(), boatName });
     onStravaConnected();
+  });
+
+  root.querySelector('#btn-tracking')?.addEventListener('click', () => {
+    clearError(root);
+    const boatName = boatInput.value.trim();
+    if (!boatName) {
+      showError(root, 'Le nom du bateau est obligatoire.');
+      return;
+    }
+    saveFlowState({ ...loadFlowState(), boatName });
+    onTracking();
   });
 }
