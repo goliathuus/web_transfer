@@ -1,11 +1,23 @@
+/*
+ * Theme aligne sur Boat Tracker : nuit marine, verre fume, bleu primaire.
+ * Memes teintes que le theme sombre du tracker (src/styles/index.css) pour
+ * qu'un participant passe de l'inscription au replay sans changer d'univers.
+ */
 :root {
-  --blue-900: #0d47a1;
-  --blue-700: #1565c0;
-  --blue-500: #1e88e5;
+  --background: hsl(220 22% 9%);
+  --foreground: hsl(213 33% 95%);
+  --muted: hsl(216 12% 64%);
+  --primary: hsl(205 90% 60%);
+  --primary-foreground: hsl(220 40% 8%);
+  --border: hsl(0 0% 100% / 0.08);
+  --input: hsl(220 14% 26%);
+  --destructive: hsl(0 72% 62%);
+  --success: hsl(152 60% 60%);
+  --warning: hsl(42 90% 62%);
   --strava: #fc4c02;
-  --text-muted: #616161;
-  --card-radius: 16px;
+  --radius: 16px;
   --max-width: 480px;
+  color-scheme: dark;
 }
 
 * {
@@ -15,18 +27,43 @@
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(180deg, var(--blue-900), var(--blue-700), var(--blue-500));
-  color: #212121;
+  color: var(--foreground);
+  background:
+    radial-gradient(1200px 700px at 12% -10%, hsl(210 80% 45% / 0.28), transparent 60%),
+    radial-gradient(900px 600px at 110% 110%, hsl(180 70% 35% / 0.2), transparent 60%),
+    linear-gradient(180deg, hsl(222 30% 9%), hsl(220 26% 7%));
+  background-attachment: fixed;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Lignes de vent (ui/backdrop.ts), derriere tout le contenu. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
 }
 
 #app {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: max(20px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
 }
+
+a {
+  color: var(--primary);
+}
+
+/* ---------- Coquille ---------- */
 
 .shell {
   width: 100%;
@@ -34,65 +71,89 @@ body {
   text-align: center;
 }
 
-.shell__logo {
-  height: 100px;
-  object-fit: contain;
-}
-
-.shell__title {
-  margin: 8px 0 0;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #fff;
-}
-
-.shell__subtitle {
-  margin: 8px 0 0;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
-}
-
 .shell__back {
   display: flex;
   justify-content: flex-start;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
+}
+
+/* Verre fume, comme les pastilles de la barre du replay. */
+.shell__back-btn,
+.card {
+  background: hsl(220 22% 9% / 0.78);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px -8px rgb(0 0 0 / 0.45);
 }
 
 .shell__back-btn {
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 1.5rem;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  color: var(--foreground);
+  font-size: 1.1rem;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 8px;
+  transition: background 0.15s;
 }
 
 .shell__back-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: hsl(220 16% 22% / 0.9);
+}
+
+/*
+ * Le PNG du logo SH a de larges marges transparentes : on recadre sur le
+ * lettrage plutot que de l'afficher en entier.
+ */
+.shell__logo {
+  width: 210px;
+  height: 92px;
+  object-fit: cover;
+  object-position: 50% 40%;
+}
+
+.shell__title {
+  margin: 4px 0 0;
+  font-size: 1.75rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+}
+
+.shell__subtitle {
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  color: var(--muted);
 }
 
 .card {
-  margin-top: 32px;
-  background: #fff;
-  border-radius: var(--card-radius);
+  margin-top: 24px;
+  border-radius: var(--radius);
   padding: 24px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   text-align: left;
 }
 
 .card h2 {
-  margin: 0 0 8px;
-  font-size: 1.35rem;
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+  font-weight: 650;
   text-align: center;
 }
 
 .card p.hint {
-  margin: 0 0 24px;
-  color: var(--text-muted);
+  margin: 0 0 22px;
+  color: var(--muted);
   font-size: 0.9rem;
   text-align: center;
 }
+
+.card strong {
+  color: var(--foreground);
+}
+
+/* ---------- Formulaires ---------- */
 
 .field {
   margin-bottom: 16px;
@@ -102,22 +163,32 @@ body {
   display: block;
   margin-bottom: 6px;
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 
 .field input {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input);
   border-radius: 12px;
   font-size: 1rem;
-  background: #fafafa;
+  color: var(--foreground);
+  background: hsl(220 22% 9% / 0.6);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field input::placeholder {
+  color: hsl(216 12% 64% / 0.7);
 }
 
 .field input:focus {
-  outline: 2px solid var(--blue-500);
-  border-color: transparent;
+  outline: none;
+  border-color: hsl(205 90% 60% / 0.6);
+  box-shadow: 0 0 0 3px hsl(205 90% 60% / 0.3);
 }
+
+/* ---------- Boutons ---------- */
 
 .btn {
   display: inline-flex;
@@ -125,56 +196,91 @@ body {
   justify-content: center;
   gap: 8px;
   width: 100%;
-  min-height: 50px;
+  min-height: 48px;
   padding: 12px 16px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 0.98rem;
+  font-weight: 650;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: background 0.15s, opacity 0.15s, transform 0.1s;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.99);
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
-.btn-primary {
-  background: var(--blue-900);
-  color: #fff;
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px hsl(205 90% 60% / 0.45);
 }
 
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 10px 24px -10px hsl(205 90% 60% / 0.55);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: hsl(205 90% 66%);
+}
+
+/* Action principale de l'etape participant : garde la couleur de marque Strava. */
 .btn-strava {
   background: var(--strava);
   color: #fff;
+  box-shadow: 0 10px 24px -10px rgb(252 76 2 / 0.6);
+}
+
+.btn-strava:hover:not(:disabled) {
+  background: #ff5a14;
 }
 
 .btn-outline {
-  background: #fff;
-  color: var(--blue-900);
-  border: 1px solid #ccc;
+  background: hsl(220 22% 9% / 0.4);
+  color: var(--foreground);
+  border-color: var(--input);
   margin-top: 12px;
 }
 
+.btn-outline:hover:not(:disabled) {
+  background: hsl(220 16% 22% / 0.8);
+}
+
+/* ---------- Alertes ---------- */
+
 .alert {
   margin-top: 16px;
-  padding: 12px;
+  padding: 12px 14px;
   border-radius: 12px;
   font-size: 0.9rem;
+  border: 1px solid;
 }
 
 .alert-error {
-  background: #ffebee;
-  color: #c62828;
-  border: 1px solid #ef9a9a;
+  background: hsl(0 72% 62% / 0.1);
+  color: hsl(0 85% 78%);
+  border-color: hsl(0 72% 62% / 0.4);
 }
 
 .alert-success {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #a5d6a7;
+  background: hsl(152 60% 50% / 0.1);
+  color: hsl(152 60% 75%);
+  border-color: hsl(152 60% 50% / 0.4);
 }
+
+.alert-warning {
+  background: hsl(42 90% 55% / 0.1);
+  color: hsl(42 90% 75%);
+  border-color: hsl(42 90% 55% / 0.4);
+}
+
+/* ---------- Activites Strava ---------- */
 
 .activity-list {
   list-style: none;
@@ -186,100 +292,131 @@ body {
   display: flex;
   gap: 12px;
   align-items: center;
-  padding: 16px;
-  margin-bottom: 12px;
-  border: 1px solid #eee;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 1px solid hsl(0 0% 100% / 0.1);
   border-radius: 12px;
+  background: hsl(220 22% 9% / 0.4);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: border-color 0.15s, background 0.15s;
 }
 
 .activity-item:hover:not(.activity-item--loading) {
-  background: #f5f5f5;
+  border-color: hsl(205 90% 60% / 0.5);
+  background: hsl(205 90% 60% / 0.08);
 }
 
 .activity-item--loading {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: wait;
 }
 
 .activity-item__icon {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: #fff3e0;
+  background: hsl(205 90% 60% / 0.15);
+  box-shadow: inset 0 0 0 1px hsl(205 90% 60% / 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   flex-shrink: 0;
 }
 
 .activity-item__name {
-  font-weight: 700;
+  font-weight: 650;
   margin: 0 0 4px;
 }
 
 .activity-item__meta {
   margin: 0;
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
+/* ---------- Recapitulatif ---------- */
+
 .status-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 12px;
-  font-weight: 600;
-  margin: 16px 0;
-  width: 100%;
   justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin: 16px 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid;
 }
 
 .status-badge--pending {
-  background: #e3f2fd;
-  color: #1565c0;
-  border: 1px solid #90caf9;
+  background: hsl(205 90% 60% / 0.12);
+  color: hsl(205 90% 75%);
+  border-color: hsl(205 90% 60% / 0.35);
 }
 
 .status-badge--accepted {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #a5d6a7;
+  background: hsl(152 60% 50% / 0.12);
+  color: hsl(152 60% 75%);
+  border-color: hsl(152 60% 50% / 0.35);
 }
 
 .summary-row {
   display: flex;
   gap: 12px;
-  padding: 6px 0;
+  padding: 7px 0;
   font-size: 0.95rem;
+  border-bottom: 1px solid hsl(0 0% 100% / 0.06);
+}
+
+.summary-row:last-child {
+  border-bottom: none;
 }
 
 .summary-row dt {
-  width: 90px;
+  width: 96px;
   flex-shrink: 0;
-  color: var(--text-muted);
+  color: var(--muted);
   font-weight: 500;
 }
 
 .summary-row dd {
   margin: 0;
   font-weight: 600;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
+
+.success-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--success);
+  background: hsl(152 60% 50% / 0.12);
+  box-shadow: inset 0 0 0 1px hsl(152 60% 50% / 0.4);
+}
+
+/* ---------- Chargement ---------- */
 
 .loading-center {
   text-align: center;
   padding: 32px;
-  color: var(--text-muted);
+  color: var(--muted);
 }
 
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid #e0e0e0;
-  border-top-color: var(--blue-700);
+  border: 3px solid hsl(0 0% 100% / 0.12);
+  border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin: 0 auto 12px;
@@ -295,34 +432,25 @@ body {
   display: none !important;
 }
 
-.success-icon {
-  text-align: center;
-  font-size: 3rem;
-  color: #43a047;
-  margin-bottom: 8px;
-}
-
-.alert-warning {
-  background: #fff8e1;
-  color: #8d6e00;
-  border: 1px solid #ffe082;
-}
-
 .divider {
   display: flex;
   align-items: center;
   gap: 12px;
   margin: 24px 0 12px;
-  color: var(--text-muted);
-  font-size: 0.85rem;
+  color: hsl(216 12% 64% / 0.8);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .divider::before,
 .divider::after {
   content: '';
   flex: 1;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid hsl(0 0% 100% / 0.1);
 }
+
+/* ---------- Suivi en direct (OwnTracks) ---------- */
 
 .setup-steps {
   margin: 16px 0 0;
@@ -331,7 +459,12 @@ body {
 
 .setup-steps li {
   margin-bottom: 20px;
-  line-height: 1.45;
+  line-height: 1.5;
+}
+
+.setup-steps li::marker {
+  color: var(--primary);
+  font-weight: 700;
 }
 
 .setup-steps__action {
@@ -341,7 +474,7 @@ body {
 
 .setup-steps__note {
   margin: 8px 0 0;
-  color: var(--text-muted);
+  color: var(--muted);
   font-size: 0.85rem;
 }
 
@@ -354,11 +487,15 @@ body {
   text-decoration: none;
 }
 
+/* Le QR garde un fond blanc : les lecteurs lisent mal un code inverse. */
 .qr {
   display: block;
   width: 200px;
   height: 200px;
   margin: 12px auto 0;
+  padding: 8px;
+  border-radius: 12px;
+  background: #fff;
 }
 
 .manual-config {
@@ -368,17 +505,21 @@ body {
 
 .manual-config summary {
   cursor: pointer;
-  color: var(--blue-900);
+  color: var(--primary);
   font-weight: 500;
 }
 
 .manual-config code {
   word-break: break-all;
   font-size: 0.8rem;
+  color: var(--foreground);
+  background: hsl(0 0% 100% / 0.06);
+  padding: 1px 5px;
+  border-radius: 5px;
 }
 
 @media (min-width: 600px) {
   .shell__title {
-    font-size: 2.5rem;
+    font-size: 2.1rem;
   }
 }
