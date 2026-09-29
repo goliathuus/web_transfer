@@ -17,7 +17,8 @@
 -- le message et le renvoyer plus tard. On ne repond donc 401 que pour un
 -- appareil inconnu ; un message inexploitable est accepte puis ignore.
 --
--- Remplace l'Edge Function owntracks-ingest (meme logique de tri).
+-- Remplace l'Edge Function owntracks-ingest (meme logique de tri), supprimee
+-- le 2026-09-29.
 -- A executer dans le SQL Editor (projet yucxpbxrtruwtdqbsxeh).
 -- =====================================================================
 

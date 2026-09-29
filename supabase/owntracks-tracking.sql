@@ -2,14 +2,14 @@
 -- Tracking temps reel via OwnTracks (mode HTTP)
 -- =====================================================================
 -- Les apps OwnTracks officielles (Android / iOS) postent leurs positions
--- a l'Edge Function owntracks-ingest. OwnTracks ne sait pas porter un JWT
+-- a la RPC owntracks_ingest (voir owntracks-ingest-rest.sql). OwnTracks ne sait pas porter un JWT
 -- Supabase : chaque telephone recoit un identifiant d'appareil et un jeton
 -- (HTTP Basic), crees par register_tracker_device depuis la page
 -- d'inscription (utilisateur anonyme, comme le parcours Strava).
 --
 --   tracker_devices          appareil -> utilisateur / evenement / bateau / session
 --   register_tracker_device  appelee par le participant, renvoie le jeton en clair UNE fois
---   ingest_owntracks_points  appelee par owntracks-ingest (service_role uniquement)
+--   ingest_owntracks_points  appelee par la RPC owntracks_ingest (pas executable par les clients)
 --
 -- A executer dans le SQL Editor (projet yucxpbxrtruwtdqbsxeh).
 -- =====================================================================
@@ -140,10 +140,10 @@ REVOKE ALL ON FUNCTION public.register_tracker_device(uuid, text) FROM PUBLIC, a
 GRANT EXECUTE ON FUNCTION public.register_tracker_device(uuid, text) TO authenticated;
 
 -- ---------------------------------------------------------------------
--- Ecriture des points (appelee par owntracks-ingest)
+-- Ecriture des points (appelee par la RPC owntracks_ingest)
 -- ---------------------------------------------------------------------
 -- Verifie d'abord le couple appareil / jeton (HTTP Basic cote OwnTracks).
--- p_points : tableau deja filtre par l'Edge Function, chaque element
+-- p_points : tableau deja filtre par owntracks_ingest, chaque element
 --   { ts (ISO), lat, lon, speed (m/s ou null), heading (deg ou null), meta (jsonb) }
 -- Idempotent : OwnTracks renvoie sa file apres une coupure, les doublons
 -- (meme ts) sont ignores.
