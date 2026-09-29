@@ -63,8 +63,10 @@ function trackingHtml(reg: TrackerRegistration, configUrl: string, qrDataUrl: st
       <li>
         <strong>Configurez l'app</strong> depuis ce téléphone :
         <p class="setup-steps__note">
-          iPhone : ouvrez d'abord OwnTracks › Réglages et activez <em>Allow external configuration</em>,
-          sinon l'app refuse le lien.
+          iPhone : autorisez d'abord la configuration par lien, sinon l'app la refuse.
+          Dans OwnTracks, touchez le bouton <strong>ⓘ</strong> en haut à gauche, puis
+          <em>Settings</em> (Paramètres), descendez tout en bas jusqu'à <em>Remote Control</em>
+          et activez <em>Allow external configuration</em>.
         </p>
         <a class="btn btn-primary setup-steps__action" href="${escapeHtml(configUrl)}">Configurer OwnTracks</a>
         <p class="setup-steps__note">Vous êtes sur un ordinateur ? Scannez ce code avec l'appareil photo du téléphone.</p>
