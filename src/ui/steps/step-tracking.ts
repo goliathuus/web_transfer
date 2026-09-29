@@ -62,6 +62,10 @@ function trackingHtml(reg: TrackerRegistration, configUrl: string, qrDataUrl: st
       </li>
       <li>
         <strong>Configurez l'app</strong> depuis ce téléphone :
+        <p class="setup-steps__note">
+          iPhone : ouvrez d'abord OwnTracks › Réglages et activez <em>Allow external configuration</em>,
+          sinon l'app refuse le lien.
+        </p>
         <a class="btn btn-primary setup-steps__action" href="${escapeHtml(configUrl)}">Configurer OwnTracks</a>
         <p class="setup-steps__note">Vous êtes sur un ordinateur ? Scannez ce code avec l'appareil photo du téléphone.</p>
         <img class="qr" src="${qrDataUrl}" alt="QR code de configuration OwnTracks" width="240" height="240" />
@@ -74,7 +78,14 @@ function trackingHtml(reg: TrackerRegistration, configUrl: string, qrDataUrl: st
         </p>
       </li>
       <li>
-        <strong>Vérifiez le mode <em>Move</em></strong> dans OwnTracks avant le départ, et gardez le téléphone chargé.
+        <strong>Vérifiez le mode <em>Move</em></strong> dans OwnTracks avant le départ.
+      </li>
+      <li>
+        <strong>En navigation</strong>, laissez OwnTracks ouvert et le téléphone branché.
+        <p class="setup-steps__note">
+          Sans réseau, les positions sont gardées sur le téléphone et envoyées au retour du réseau :
+          ne fermez pas l'app et ne vous réinscrivez pas avant qu'elles soient parties.
+        </p>
       </li>
     </ol>
 
