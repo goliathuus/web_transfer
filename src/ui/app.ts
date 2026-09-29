@@ -7,6 +7,7 @@ import { renderStepCode } from './steps/step-code';
 import { renderStepParticipant } from './steps/step-participant';
 import { renderStepSuccess } from './steps/step-success';
 import { renderStepTracking } from './steps/step-tracking';
+import { renderQuickTracking } from './steps/step-quick-tracking';
 
 export class App {
   private root: HTMLElement;
@@ -16,6 +17,14 @@ export class App {
   }
 
   async init(): Promise<void> {
+    // Lien d'activite envoye par l'organisateur : ?suivi=CODE. Pas ?code=,
+    // deja pris par le retour OAuth de Strava.
+    const suivi = new URLSearchParams(window.location.search).get('suivi');
+    if (suivi) {
+      await renderQuickTracking(this.root, suivi);
+      return;
+    }
+
     const oauthCode = await this.handleOAuthCallback();
     if (oauthCode) return;
 
